@@ -152,7 +152,6 @@ function App() {
   }, []);
 
   function handleRegister(email, password) {
-    // console.log("from APP:", email, password);
     auth
       .register(email, password)
       .then((data) => {
