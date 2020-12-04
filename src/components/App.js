@@ -184,8 +184,7 @@ function App() {
             handleInfoTooltipOpen();
           });
 
-        // setDataInfoTool({ title: "Вы вошли!", icon: successLogo });
-        // handleInfoTooltipOpen();
+        localStorage.setItem("token", data.token);
         setLoggedIn(true);
         history.push("/");
       })
