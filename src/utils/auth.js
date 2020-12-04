@@ -14,7 +14,7 @@ export const register = (email, password) =>
     body: JSON.stringify({ email, password }),
   }).then(checkResponse);
 
-export const authorize = (email, password) => {
+export const authorize = (email, password) =>
   fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
@@ -23,9 +23,8 @@ export const authorize = (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   }).then(checkResponse);
-};
 
-export const getContent = (token) => {
+export const getContent = (token) =>
   fetch(`${BASE_URL}/users/me`, {
     method: "POST",
     headers: {
@@ -34,4 +33,3 @@ export const getContent = (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).then(checkResponse);
-};

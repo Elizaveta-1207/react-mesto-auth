@@ -35,6 +35,7 @@ function App() {
     title: "",
     icon: "",
   });
+  const [userData, setUserData] = React.useState({});
   const history = useHistory();
 
   function handleEditProfileClick() {
@@ -154,18 +155,66 @@ function App() {
     console.log("from APP:", email, password);
     auth
       .register(email, password)
-      //   .then((data) => {
-      //     history.push("/sign-in");
-      //     setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
-      //     console.log(data);
-      //   })
+      .then((data) => {
+        history.push("/sign-in");
+        setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
+        console.log(data);
+      })
       .catch((err) => {
         setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
         console.error(err);
       });
     handleInfoTooltipOpen();
   }
-  function handleLogin() {}
+  function handleLogin(email, password) {
+    auth
+      .authorize(escape(email), escape(password))
+      .then((data) => {
+        auth
+          .getContent(data.token)
+          .then((res) => {
+            setUserData(res.data.email);
+            console.log(userData);
+          })
+          .catch((err) => {
+            console.error(err);
+            // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+            // handleInfoTooltipOpen();
+          });
+
+        setLoggedIn(true);
+        history.push("/");
+      })
+      .catch((err) => {
+        // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+        // handleInfoTooltipOpen();
+        console.error(err);
+      });
+  }
+
+  function tokenCheck() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      auth
+        .getContent(token)
+        .then((res) => {
+          console.log(res);
+          if (res) {
+            setUserData(res.data.email);
+            setLoggedIn(true);
+            history.push("/");
+          } else {
+            setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+            handleInfoTooltipOpen();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }
+
+  React.useEffect(() => {
+    tokenCheck();
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -189,7 +238,7 @@ function App() {
             <Register handleRegister={handleRegister} />
           </Route>
           <Route path="/sign-in">
-            <Login loggedIn={loggedIn} />
+            <Login handleLogin={handleLogin} />
           </Route>
           <Route exact path="/">
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
