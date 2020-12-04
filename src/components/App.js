@@ -159,37 +159,37 @@ function App() {
         history.push("/sign-in");
         setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
         console.log(data);
+        handleInfoTooltipOpen();
       })
       .catch((err) => {
         setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
         console.error(err);
+        handleInfoTooltipOpen();
       });
-    handleInfoTooltipOpen();
   }
-  function handleLogin(email, password) {
-    auth
-      .authorize(escape(email), escape(password))
-      .then((data) => {
-        auth
-          .getContent(data.token)
-          .then((res) => {
-            setUserData(res.data.email);
-            console.log(userData);
-          })
-          .catch((err) => {
-            console.error(err);
-            // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-            // handleInfoTooltipOpen();
-          });
-
-        setLoggedIn(true);
-        history.push("/");
-      })
-      .catch((err) => {
-        // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-        // handleInfoTooltipOpen();
-        console.error(err);
-      });
+  function handleLogin(/* email, password */) {
+    // auth
+    //   .authorize(escape(email), escape(password))
+    //   .then((data) => {
+    //     auth
+    //       .getContent(data.token)
+    //       .then((res) => {
+    //         setUserData(res.data.email);
+    //         console.log(res.data.email);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //         // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+    //         // handleInfoTooltipOpen();
+    //       });
+    //     setLoggedIn(true);
+    //     history.push("/");
+    //   })
+    //   .catch((err) => {
+    //     // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+    //     // handleInfoTooltipOpen();
+    //     console.error(err);
+    //   });
   }
 
   function tokenCheck() {
@@ -199,14 +199,14 @@ function App() {
         .getContent(token)
         .then((res) => {
           console.log(res);
-          if (res) {
-            setUserData(res.data.email);
-            setLoggedIn(true);
-            history.push("/");
-          } else {
-            setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-            handleInfoTooltipOpen();
-          }
+          //   if (res) {
+          //     setUserData(res.data.email);
+          //     setLoggedIn(true);
+          //     history.push("/");
+          //   } else {
+          //     setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+          //     handleInfoTooltipOpen();
+          //   }
         })
         .catch((err) => console.log(err));
     }
