@@ -35,7 +35,7 @@ function App() {
     title: "",
     icon: "",
   });
-  const [userData, setUserData] = React.useState({});
+  const [userData, setUserData] = React.useState("");
   const history = useHistory();
 
   function handleEditProfileClick() {
@@ -152,44 +152,48 @@ function App() {
   }, []);
 
   function handleRegister(email, password) {
-    console.log("from APP:", email, password);
+    // console.log("from APP:", email, password);
     auth
       .register(email, password)
       .then((data) => {
         history.push("/sign-in");
-        setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
         console.log(data);
+        setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
         handleInfoTooltipOpen();
+      })
+      .catch((err) => {
+        console.error(err);
+        setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+        handleInfoTooltipOpen();
+      });
+  }
+
+  function handleLogin(email, password) {
+    console.log(email, password);
+    auth
+      .authorize(email, password)
+      .then((data) => {
+        auth
+          .getContent(data.token)
+          .then((res) => {
+            setUserData(res.data.email);
+          })
+          .catch((err) => {
+            setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+            console.error(err);
+            handleInfoTooltipOpen();
+          });
+
+        // setDataInfoTool({ title: "Вы вошли!", icon: successLogo });
+        // handleInfoTooltipOpen();
+        setLoggedIn(true);
+        history.push("/");
       })
       .catch((err) => {
         setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
         console.error(err);
         handleInfoTooltipOpen();
       });
-  }
-  function handleLogin(/* email, password */) {
-    // auth
-    //   .authorize(escape(email), escape(password))
-    //   .then((data) => {
-    //     auth
-    //       .getContent(data.token)
-    //       .then((res) => {
-    //         setUserData(res.data.email);
-    //         console.log(res.data.email);
-    //       })
-    //       .catch((err) => {
-    //         console.error(err);
-    //         // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-    //         // handleInfoTooltipOpen();
-    //       });
-    //     setLoggedIn(true);
-    //     history.push("/");
-    //   })
-    //   .catch((err) => {
-    //     // setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-    //     // handleInfoTooltipOpen();
-    //     console.error(err);
-    //   });
   }
 
   function tokenCheck() {
@@ -198,15 +202,14 @@ function App() {
       auth
         .getContent(token)
         .then((res) => {
-          console.log(res);
-          //   if (res) {
-          //     setUserData(res.data.email);
-          //     setLoggedIn(true);
-          //     history.push("/");
-          //   } else {
-          //     setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
-          //     handleInfoTooltipOpen();
-          //   }
+          if (res) {
+            setLoggedIn(true);
+            setUserData(res.data.email);
+            history.push("/");
+          } else {
+            setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: failLogo });
+            handleInfoTooltipOpen();
+          }
         })
         .catch((err) => console.log(err));
     }
@@ -216,10 +219,17 @@ function App() {
     tokenCheck();
   }, []);
 
+  function signOut() {
+    setLoggedIn(false);
+    setUserData("");
+    localStorage.removeItem("token");
+    history.push("/sign-in");
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header headerMail={"email"} />
+        <Header headerMail={userData} signOut={signOut} />
         <Switch>
           <ProtectedRoute
             exact

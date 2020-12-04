@@ -26,7 +26,7 @@ export const authorize = (email, password) =>
 
 export const getContent = (token) =>
   fetch(`${BASE_URL}/users/me`, {
-    method: "POST",
+    method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
