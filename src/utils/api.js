@@ -1,3 +1,14 @@
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable no-underscore-dangle */
+
+const handleOriginalResponse = (res) => {
+  if (!res.ok) {
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
+  return res.json();
+};
+
 class Api {
   constructor(options) {
     this._token = options.baseUrl;
@@ -11,14 +22,7 @@ class Api {
       headers: {
         authorization: this._authorization,
       },
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   addNewCard({ name, link }) {
@@ -29,17 +33,10 @@ class Api {
         "Content-Type": this._contentType,
       },
       body: JSON.stringify({
-        name: name,
-        link: link,
+        name,
+        link,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   deleteCard(cardId) {
@@ -49,14 +46,7 @@ class Api {
         authorization: this._authorization,
         "Content-Type": this._contentType,
       },
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   changeLikeCardStatus(cardId, isLiked) {
@@ -66,14 +56,7 @@ class Api {
         authorization: this._authorization,
         "Content-Type": this._contentType,
       },
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   getUserInfo() {
@@ -82,14 +65,7 @@ class Api {
       headers: {
         authorization: this._authorization,
       },
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   editProfile({ name, about }) {
@@ -100,17 +76,10 @@ class Api {
         "Content-Type": this._contentType,
       },
       body: JSON.stringify({
-        name: name,
-        about: about,
+        name,
+        about,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 
   editAvatar({ avatar }) {
@@ -123,14 +92,7 @@ class Api {
       body: JSON.stringify({
         avatar: `${avatar}`,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(handleOriginalResponse);
   }
 }
 
